@@ -10,6 +10,7 @@ namespace Simulation_Task
     {
         public Server()
         {
+            //comment
             ServiceTimeDistribution = new List<TimeDistribution>();
         }
         public Server(string name , int id , List<TimeDistribution> times)
