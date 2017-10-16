@@ -30,14 +30,14 @@ namespace Simulation_Task
         public int DepartureTime { get; set; }
 
         public Server AssignedServer { get; set; }
-        public Queue<int> CustomerQueue { get; set;}
-        public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
+        public Queue<int> CustomerQueue { get; set; }
+        public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
             //comment
             //comment tani
             createTableColumns(Res, Servers);
-            makeSimulationCalc(Res, Servers,InterArrivalDirtribution,ssm,ssc,NumberOfCustomers);
-            
+            makeSimulationCalc(Res, Servers, InterArrivalDirtribution, ssm, ssc, NumberOfCustomers);
+
 
         }
 
@@ -65,20 +65,20 @@ namespace Simulation_Task
             Random rand = new Random();
             return rand.Next(0, 99);
         }
-        private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
+        private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
-            for(int i = 0; (i < NumberOfCustomers)||(CustomerQueue.Count > 0) ;i++)
+            for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0); i++)
             {
                 CustomerQueue.Enqueue(i);
                 int serverId = -1;
                 /////get idle server and assign it to a customer
                 //if no servers avaliable serverId =-1
-                
-                if(serverId !=-1)
+
+                if (serverId != -1)
                 {
 
                 }
-                
+
             }
         }
         private int Selection(List<Server> servers, bool[] idle)

@@ -140,6 +140,10 @@ namespace Simulation_Task
             ChangeLabel.Text = "Service Time";
             NameLabel.Visible = true;
             NameTB.Visible = true;
+            NofServers.Visible = true;
+            ServerLabel.Visible = true;
+            BtnSimulate.Visible = true;
+            BtnTime.Visible = false;
         }
     }
 }

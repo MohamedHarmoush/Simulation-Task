@@ -30,7 +30,7 @@
         {
             this.BtnSimulate = new System.Windows.Forms.Button();
             this.NofServers = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.ServerLabel = new System.Windows.Forms.Label();
             this.T4 = new System.Windows.Forms.TextBox();
             this.T3 = new System.Windows.Forms.TextBox();
             this.T2 = new System.Windows.Forms.TextBox();
@@ -44,7 +44,7 @@
             this.HeaderLabel = new System.Windows.Forms.Label();
             this.NameLabel = new System.Windows.Forms.Label();
             this.NameTB = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.BtnTime = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BtnSimulate
@@ -55,6 +55,7 @@
             this.BtnSimulate.TabIndex = 1;
             this.BtnSimulate.Text = "Save Server No.  ";
             this.BtnSimulate.UseVisualStyleBackColor = true;
+            this.BtnSimulate.Visible = false;
             this.BtnSimulate.Click += new System.EventHandler(this.button1_Click);
             // 
             // NofServers
@@ -63,16 +64,18 @@
             this.NofServers.Name = "NofServers";
             this.NofServers.Size = new System.Drawing.Size(100, 20);
             this.NofServers.TabIndex = 2;
+            this.NofServers.Visible = false;
             this.NofServers.TextChanged += new System.EventHandler(this.UpdateInputGV);
             // 
-            // label1
+            // ServerLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Severs";
+            this.ServerLabel.AutoSize = true;
+            this.ServerLabel.Location = new System.Drawing.Point(12, 9);
+            this.ServerLabel.Name = "ServerLabel";
+            this.ServerLabel.Size = new System.Drawing.Size(40, 13);
+            this.ServerLabel.TabIndex = 3;
+            this.ServerLabel.Text = "Severs";
+            this.ServerLabel.Visible = false;
             // 
             // T4
             // 
@@ -175,22 +178,22 @@
             this.NameTB.Size = new System.Drawing.Size(100, 20);
             this.NameTB.TabIndex = 15;
             // 
-            // button2
+            // BtnTime
             // 
-            this.button2.Location = new System.Drawing.Point(198, 254);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(129, 41);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "Save Time Distribution";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.BtnTime.Location = new System.Drawing.Point(198, 254);
+            this.BtnTime.Name = "BtnTime";
+            this.BtnTime.Size = new System.Drawing.Size(129, 41);
+            this.BtnTime.TabIndex = 17;
+            this.BtnTime.Text = "Save Time Distribution";
+            this.BtnTime.UseVisualStyleBackColor = true;
+            this.BtnTime.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(525, 307);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.BtnTime);
             this.Controls.Add(this.NameLabel);
             this.Controls.Add(this.NameTB);
             this.Controls.Add(this.HeaderLabel);
@@ -204,7 +207,7 @@
             this.Controls.Add(this.T2);
             this.Controls.Add(this.T3);
             this.Controls.Add(this.T4);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ServerLabel);
             this.Controls.Add(this.NofServers);
             this.Controls.Add(this.BtnSimulate);
             this.Name = "Form1";
@@ -219,7 +222,7 @@
 
         private System.Windows.Forms.Button BtnSimulate;
         private System.Windows.Forms.TextBox NofServers;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ServerLabel;
         private System.Windows.Forms.TextBox T4;
         private System.Windows.Forms.TextBox T3;
         private System.Windows.Forms.TextBox T2;
@@ -233,7 +236,7 @@
         private System.Windows.Forms.Label HeaderLabel;
         private System.Windows.Forms.Label NameLabel;
         private System.Windows.Forms.TextBox NameTB;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button BtnTime;
     }
 }
 
