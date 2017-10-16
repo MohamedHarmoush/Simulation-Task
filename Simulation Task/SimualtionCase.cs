@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using MultiChannelQueueModels;
 namespace Simulation_Task
 {
     public class SimualtionCase
@@ -30,10 +30,12 @@ namespace Simulation_Task
         public int DepartureTime { get; set; }
 
         public Server AssignedServer { get; set; }
-        public void createResultsTable(DataTable Res,List<Server> Servers)
+        public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
         {
             //comment
             createTableColumns(Res, Servers);
+            makeSimulationCalc(Res, Servers,InterArrivalDirtribution,ssm,ssc,NumberOfCustomers);
+            
 
         }
 
@@ -55,6 +57,18 @@ namespace Simulation_Task
 
             }
             Res.Columns.Add("Time In Queue", typeof(int));
+        }
+        private int RandomNumberGenerator()
+        {
+            Random rand = new Random();
+            return rand.Next(0, 99);
+        }
+        private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
+        {
+            for(int i = 0; i < NumberOfCustomers;i++)
+            {
+
+            }
         }
     }
 }
