@@ -30,6 +30,7 @@ namespace Simulation_Task
         public int DepartureTime { get; set; }
 
         public Server AssignedServer { get; set; }
+        public Queue<int> CustomerQueue { get; set;}
         public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
         {
             //comment
@@ -65,10 +66,53 @@ namespace Simulation_Task
         }
         private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution,Enums.ServerSelectionMethod ssm,Enums.ServerStoppingCondition ssc,int NumberOfCustomers)
         {
-            for(int i = 0; i < NumberOfCustomers;i++)
+            for(int i = 0; (i < NumberOfCustomers)||(CustomerQueue.Count > 0) ;i++)
             {
+                CustomerQueue.Enqueue(i);
+                int serverId = -1;
+                /////get idle server and assign it to a customer
+                //if no servers avaliable serverId =-1
+                
+                if(serverId !=-1)
+                {
+
+                }
+                
+            }
+        }
+        private int Selection(List<Server> servers, bool[] idle)
+        {
+            double[] TotServiceTime = new double[idle.Length];
+            for (int i = 0; i < idle.Length; i++)
+            {
+                TotServiceTime[0] = servers[i].ServiceTimeDistribution[0].Time *
+                                    servers[i].ServiceTimeDistribution[0].Probability
+                                    +
+                                    servers[i].ServiceTimeDistribution[1].Time *
+                                    servers[i].ServiceTimeDistribution[1].Probability
+                                    +
+                                    servers[i].ServiceTimeDistribution[2].Time *
+                                    servers[i].ServiceTimeDistribution[2].Probability
+                                    +
+                                    servers[i].ServiceTimeDistribution[3].Time *
+                                    servers[i].ServiceTimeDistribution[3].Probability
+                                    ;
 
             }
+            double minTot = double.MaxValue;
+            int idx = -1;
+            for (int i = 0; i < idle.Length; i++)
+            {
+                if (!idle[i])
+                {
+                    if (TotServiceTime[i] > minTot)
+                    {
+                        idx = i;
+                        minTot = TotServiceTime[i];
+                    }
+                }
+            }
+            return idx;
         }
     }
 }
