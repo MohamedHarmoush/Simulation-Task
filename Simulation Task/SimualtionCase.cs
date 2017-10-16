@@ -73,6 +73,7 @@ namespace Simulation_Task
                 int serverId = -1;
                 /////get idle server and assign it to a customer
                 //if no servers avaliable serverId =-1
+                /// master
 
                 if (serverId != -1)
                 {
