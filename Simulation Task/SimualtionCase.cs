@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,31 @@ namespace Simulation_Task
         public int DepartureTime { get; set; }
 
         public Server AssignedServer { get; set; }
+        public void createResultsTable(DataTable Res,List<Server> Servers)
+        {
+            //comment
+            createTableColumns(Res, Servers);
 
+        }
+
+        public void createTableColumns(DataTable Res, List<Server> Servers)
+        {
+            Res.Columns.Add("Customer No.", typeof(int));
+            Res.Columns.Add("Random Digits For Arrival", typeof(int));
+            Res.Columns.Add("Time Between Arrival", typeof(int));
+            Res.Columns.Add("Clock Time For Arrival", typeof(int));
+            Res.Columns.Add("Rondom Digits For Service", typeof(int));
+
+            int NumberOfServers = Servers.Count;
+            for (int i = 0; i < NumberOfServers; i++)
+            {
+                Res.Columns.Add("Server Name", typeof(string));
+                Res.Columns.Add("Time Service Begins", typeof(int));
+                Res.Columns.Add("Service Time", typeof(int));
+                Res.Columns.Add("Time Service End", typeof(int));
+
+            }
+            Res.Columns.Add("Time In Queue", typeof(int));
+        }
     }
 }

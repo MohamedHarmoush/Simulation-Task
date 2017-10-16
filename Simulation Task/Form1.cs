@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MultiChannelQueueModels;
 
 namespace Simulation_Task
 {
@@ -60,6 +61,7 @@ namespace Simulation_Task
                 ServerServiceTime[1].MinRange = ServerServiceTime[0].MaxRange + 1;
                 ServerServiceTime[1].MaxRange = ServerServiceTime[1].CummProbability * 100;
 
+
                 ServerServiceTime[2].MinRange = ServerServiceTime[1].MaxRange + 1;
                 ServerServiceTime[2].MaxRange = ServerServiceTime[2].CummProbability * 100;
 
@@ -79,6 +81,9 @@ namespace Simulation_Task
 
             }
 
+            
+
+            //if()
                 this.Visible = false;
             Results Res = new Results(InterArrivalDistribution,Servers);
             Res.Show();
