@@ -30,12 +30,14 @@ namespace Simulation_Task
         public int DepartureTime { get; set; }
 
         public Server AssignedServer { get; set; }
+        public int MaxQueueLength { get; set; }
         public Queue<int> CustomerQueue { get; set; }
         public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
             //comment
             //comment tani
             createTableColumns(Res, Servers);
+            MaxQueueLength = -1;
             makeSimulationCalc(Res, Servers, InterArrivalDirtribution, ssm, ssc, NumberOfCustomers);
 
 
@@ -73,19 +75,51 @@ namespace Simulation_Task
 
             for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0); i++)
             {
-                
                 //free 
                 //CustomerQueue.Enqueue(i);
                 //int serverId = -1;
                 ///////get idle server and assign it to a customer
                 ////if no servers avaliable serverId =-1
+                int serverId;
+                int customerId ;
+                serverId = Selection(Servers, EndTime);
+                if (serverId != -1)
+                {
+                    while (CustomerQueue.Count != 0 && serverId != -1)
+                    {
+                        customerId = CustomerQueue.Dequeue();
+                        AssignedServer = Servers[serverId];
+                        EndTime[serverId] = serveCustomer(customerId, table);
+                        serverId = Selection(Servers, EndTime);
+                    }
+                    /// if queue empty and there's avaliable servers
+                    if(serverId != -1)
+                    {
+                        customerId = i;
+                        AssignedServer = Servers[serverId];
+                        EndTime[serverId] = serveCustomer(customerId, table);
+                    }
+                    //// if queue not empty and there isn't avaliable servers
+                    else if (serverId == -1 && CustomerQueue.Count != 0)
+                    {
+                        CustomerQueue.Enqueue(i);
+                    }
+                }else
+                {
+                    CustomerQueue.Enqueue(i);
+                }
 
-                //if (serverId != -1)
-                //{
+                if (MaxQueueLength < CustomerQueue.Count)
+                    MaxQueueLength = CustomerQueue.Count;
 
-                //}
 
             }
+        }
+        private int serveCustomer(int customerId,DataTable table)
+        {
+            
+
+            return TimeServiceEnds;
         }
         private void Free_Servers(ref int[] EndTime, int CustomerArrivalTime)
         {
@@ -94,7 +128,8 @@ namespace Simulation_Task
                 if (EndTime[i] <= CustomerArrivalTime) EndTime[i] = 0;
             }
         }
-        private int Selection(List<Server> servers, bool[] idle)
+        // idle represents endtime of each server and if server is idle the content equals 0
+        private int Selection(List<Server> servers, int[] idle)
         {
             double[] TotServiceTime = new double[idle.Length];
             for (int i = 0; i < idle.Length; i++)
@@ -117,7 +152,7 @@ namespace Simulation_Task
             int idx = -1;
             for (int i = 0; i < idle.Length; i++)
             {
-                if (!idle[i])
+                if (idle[i] == 0)
                 {
                     if (TotServiceTime[i] > minTot)
                     {
