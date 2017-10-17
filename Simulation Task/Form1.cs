@@ -13,80 +13,83 @@ namespace Simulation_Task
 {
     public partial class Form1 : Form
     {
-        List<TimeDistribution> InterArrivalDistribution; 
+        List<TimeDistribution> InterArrivalDistribution;
+        int NoFServers;
+        List<Server> Servers;
+
         public Form1()
         {
             InitializeComponent();
             InterArrivalDistribution = new List<TimeDistribution>(4);
-           
+            Servers = new List<Server>(0);
         }
 
         private void UpdateInputGV(object sender, EventArgs e)
         {
-           
-        }
 
+        }
+        int Count = 0;
         private void button1_Click(object sender, EventArgs e)
         {
-            
-            int Nservers = int.Parse(NofServers.Text.ToString());
-            List<Server> Servers = new List<Server>(0);
-            for (int i = 0; i < Nservers; i++)
+
+            if (Count == 0) NoFServers = int.Parse(NofServers.Text);
+            HeaderLabel.Text = "Enter Server " + (Count + 1).ToString() + " Time Distribution.";
+            string ServerName = NameTB.Text.ToString();
+            List<TimeDistribution> ServerServiceTime = new List<TimeDistribution>(4);
+            for (int j = 0; j < 4; j++)
             {
-                HeaderLabel.Text = "Enter Server " + (i+1).ToString() + " Time Distribution.";
-                string ServerName = NameTB.Text.ToString();
-                List<TimeDistribution> ServerServiceTime = new List<TimeDistribution>(4);
-                for (int j = 0; j < 4;j++)
-                {
-                    ServerServiceTime.Add(new TimeDistribution());
-                }
-                    ServerServiceTime[0].Time = int.Parse(T1.Text.ToString());
-                ServerServiceTime[1].Time = int.Parse(T2.Text.ToString());
-                ServerServiceTime[2].Time = int.Parse(T3.Text.ToString());
-                ServerServiceTime[3].Time = int.Parse(T4.Text.ToString());
-                
-                ServerServiceTime[0].Probability = double.Parse(P1.Text.ToString());
-                ServerServiceTime[1].Probability = double.Parse(P2.Text.ToString());
-                ServerServiceTime[2].Probability = double.Parse(P3.Text.ToString());
-                ServerServiceTime[3].Probability = double.Parse(P4.Text.ToString());
-
-                ServerServiceTime[0].CummProbability = ServerServiceTime[0].Probability;
-                ServerServiceTime[1].CummProbability = ServerServiceTime[1].Probability + ServerServiceTime[0].CummProbability;
-                ServerServiceTime[2].CummProbability = ServerServiceTime[2].Probability + ServerServiceTime[1].CummProbability;
-                ServerServiceTime[3].CummProbability = ServerServiceTime[3].Probability + ServerServiceTime[2].CummProbability;
-
-                ServerServiceTime[0].MinRange = 1;
-                ServerServiceTime[0].MaxRange = ServerServiceTime[0].CummProbability * 100;
-
-                ServerServiceTime[1].MinRange = ServerServiceTime[0].MaxRange + 1;
-                ServerServiceTime[1].MaxRange = ServerServiceTime[1].CummProbability * 100;
-
-
-                ServerServiceTime[2].MinRange = ServerServiceTime[1].MaxRange + 1;
-                ServerServiceTime[2].MaxRange = ServerServiceTime[2].CummProbability * 100;
-
-                ServerServiceTime[3].MinRange = ServerServiceTime[2].MaxRange + 1;
-                ServerServiceTime[3].MaxRange = ServerServiceTime[3].CummProbability * 100 - 1;
-
-                Servers.Add(new Server(ServerName, i, ServerServiceTime));
-                T1.Text = "";
-                T2.Text = "";
-                T3.Text = "";
-                T4.Text = "";
-                P1.Text = "";
-                P2.Text = "";
-                P3.Text = "";
-                P4.Text = "";
-                BtnSimulate.Text = "Save Server No. " + (i + 1).ToString();
-
+                ServerServiceTime.Add(new TimeDistribution());
             }
 
-            
+            ServerServiceTime[0].Time = int.Parse(T1.Text.ToString());
+            ServerServiceTime[1].Time = int.Parse(T2.Text.ToString());
+            ServerServiceTime[2].Time = int.Parse(T3.Text.ToString());
+            ServerServiceTime[3].Time = int.Parse(T4.Text.ToString());
 
-            //if()
+            ServerServiceTime[0].Probability = double.Parse(P1.Text.ToString());
+            ServerServiceTime[1].Probability = double.Parse(P2.Text.ToString());
+            ServerServiceTime[2].Probability = double.Parse(P3.Text.ToString());
+            ServerServiceTime[3].Probability = double.Parse(P4.Text.ToString());
+
+            ServerServiceTime[0].CummProbability = ServerServiceTime[0].Probability;
+            ServerServiceTime[1].CummProbability = ServerServiceTime[1].Probability + ServerServiceTime[0].CummProbability;
+            ServerServiceTime[2].CummProbability = ServerServiceTime[2].Probability + ServerServiceTime[1].CummProbability;
+            ServerServiceTime[3].CummProbability = ServerServiceTime[3].Probability + ServerServiceTime[2].CummProbability;
+
+            ServerServiceTime[0].MinRange = 1;
+            ServerServiceTime[0].MaxRange = ServerServiceTime[0].CummProbability * 100;
+
+            ServerServiceTime[1].MinRange = ServerServiceTime[0].MaxRange + 1;
+            ServerServiceTime[1].MaxRange = ServerServiceTime[1].CummProbability * 100;
+
+
+            ServerServiceTime[2].MinRange = ServerServiceTime[1].MaxRange + 1;
+            ServerServiceTime[2].MaxRange = ServerServiceTime[2].CummProbability * 100;
+
+            ServerServiceTime[3].MinRange = ServerServiceTime[2].MaxRange + 1;
+            ServerServiceTime[3].MaxRange = ServerServiceTime[3].CummProbability * 100 - 1;
+
+            Servers.Add(new Server(ServerName, Count, ServerServiceTime));
+            T1.Text = "";
+            T2.Text = "";
+            T3.Text = "";
+            T4.Text = "";
+            P1.Text = "";
+            P2.Text = "";
+            P3.Text = "";
+            P4.Text = "";
+            BtnSimulate.Text = "Save Server No. " + (Count + 1).ToString();
+
+
+
+            Count++;
+
+            if (Count == NoFServers)
+            {
                 this.Visible = false;
-            Results Res = new Results(InterArrivalDistribution,Servers);
-            Res.Show();
+                Results Res = new Results(InterArrivalDistribution, Servers);
+                Res.Show();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)

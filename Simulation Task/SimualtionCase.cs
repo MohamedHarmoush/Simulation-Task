@@ -58,10 +58,10 @@ namespace Simulation_Task
             int NumberOfServers = Servers.Count;
             for (int i = 0; i < NumberOfServers; i++)
             {
-                Res.Columns.Add("Server Name", typeof(string));
-                Res.Columns.Add("Time Service Begins", typeof(int));
-                Res.Columns.Add("Service Time", typeof(int));
-                Res.Columns.Add("Time Service End", typeof(int));
+                Res.Columns.Add("Server"+(i+1)+"Name", typeof(string));
+                Res.Columns.Add("Server" + (i + 1) + "Time Service Begins", typeof(int));
+                Res.Columns.Add("Server" + (i + 1) + "Service Time", typeof(int));
+                Res.Columns.Add("Server" + (i + 1) + "Time Service End", typeof(int));
 
             }
             Res.Columns.Add("Time In Queue", typeof(int));
@@ -78,6 +78,7 @@ namespace Simulation_Task
                 serverEndTime[i] = 0;
             ////initialize CustomersWaiting Time.
             CustomersWaitingTime  = new List<int>(NumberOfCustomers);
+            CustomerQueue = new Queue<int>();
             for(int i =0 ; i< NumberOfCustomers;i++)
                 CustomersWaitingTime.Add(0);
             for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0); i++)
