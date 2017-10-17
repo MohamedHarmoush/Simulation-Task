@@ -67,19 +67,31 @@ namespace Simulation_Task
         }
         private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
+            int[] EndTime = new int[Servers.Count];
+            for (int i = 0; i < Servers.Count; i++)
+                EndTime[i] = 0;
+
             for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0); i++)
             {
-                CustomerQueue.Enqueue(i);
-                int serverId = -1;
-                /////get idle server and assign it to a customer
-                //if no servers avaliable serverId =-1
-                /// master
+                
+                //free 
+                //CustomerQueue.Enqueue(i);
+                //int serverId = -1;
+                ///////get idle server and assign it to a customer
+                ////if no servers avaliable serverId =-1
 
-                if (serverId != -1)
-                {
+                //if (serverId != -1)
+                //{
 
-                }
+                //}
 
+            }
+        }
+        private void Free_Servers(ref int[] EndTime, int CustomerArrivalTime)
+        {
+            for (int i = 0; i < EndTime.Length; i++)
+            {
+                if (EndTime[i] <= CustomerArrivalTime) EndTime[i] = 0;
             }
         }
         private int Selection(List<Server> servers, bool[] idle)
