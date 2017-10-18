@@ -97,7 +97,7 @@ namespace Simulation_Task
                 //int serverId = -1;
                 ///////get idle server and assign it to a customer
                 ////if no servers avaliable serverId =-1
-                int serverId;
+                int serverId = -1;
                 
                 if(i == 0)
                 {
@@ -111,46 +111,100 @@ namespace Simulation_Task
                     if(i < NumberOfCustomers)
                         customer = customerData(InterArrivalDistribution, table, i);
                 }
-                serverId = Selection(Servers, serverEndTime,customer.ArrivalTime);
-                if (serverId != -1)
+                if(CustomerQueue.Count != 0 )
                 {
-                    while (CustomerQueue.Count != 0 && serverId != -1)
+                    do
                     {
-                        customer = CustomerQueue.Dequeue();
-                        CustomersIds.Dequeue();
-                        AssignedServer = Servers[serverId];
-                        serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
-                        serverId = Selection(Servers, serverEndTime, customer.ArrivalTime);
-                    }
-                    /// if queue empty and there's avaliable servers
-                    if(serverId != -1)
+
+                        Customer customerInQueue = CustomerQueue.Peek();
+                        serverId = Selection(Servers, serverEndTime, customerInQueue.ArrivalTime, customerInQueue.CustomerId);
+                        if (serverId != -1)
+                        {
+                            customerInQueue = CustomerQueue.Dequeue();
+                            CustomersIds.Dequeue();
+                            serverId = Selection(Servers, serverEndTime, customerInQueue.ArrivalTime, customerInQueue.CustomerId);
+                            AssignedServer = Servers[serverId];
+                            serveCustomer(customerInQueue, table, InterArrivalDistribution, ref serverEndTime);
+                           
+                        }
+                    } while (CustomerQueue.Count != 0 && serverId != -1);
+                    if(CustomerQueue.Count == 0 && serverId != -1)
                     {
-                        AssignedServer = Servers[serverId];
-                        serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
-                    }
-                    //// if queue not empty and there isn't avaliable servers
-                    else if (serverId == -1 && CustomerQueue.Count != 0)
-                    {
-                        if (!CustomerIsServed[customer.CustomerId])
+                        serverId = Selection(Servers, serverEndTime, customer.ArrivalTime,customer.CustomerId);
+                        if(serverId !=-1)
+                        {
+                            AssignedServer = Servers[serverId];
+                            serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
+                        }
+                        else
                         {
                             CustomerQueue.Enqueue(customer);
                             CustomersIds.Enqueue(customer.CustomerId);
                             updateWaitingTime();
                         }
-                            
-                        
+                       
+                    }
+                    else if (CustomerQueue.Count != 0 && serverId == -1)
+                    {
+                        CustomerQueue.Enqueue(customer);
+                        CustomersIds.Enqueue(customer.CustomerId);
+                        updateWaitingTime();
                     }
                 }else
                 {
-                    //if(!CustomersIds.Contains(customer.CustomerId) && CustomerIsServed[)4
-                    if (!CustomerIsServed[customer.CustomerId])
+                    serverId = Selection(Servers, serverEndTime, customer.ArrivalTime,customer.CustomerId);
+                    if (serverId != -1)
+                    {
+                        AssignedServer = Servers[serverId];
+                        serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
+                    }else
                     {
                         CustomerQueue.Enqueue(customer);
                         CustomersIds.Enqueue(customer.CustomerId);
                         updateWaitingTime();
                     }
                 }
-
+                
+               // serverId = Selection(Servers, serverEndTime,customer.ArrivalTime);
+               // if (serverId != -1)
+               // {
+               //     while (CustomerQueue.Count != 0 && serverId != -1)
+               //     {
+               //         customer = CustomerQueue.Dequeue();
+               //         CustomersIds.Dequeue();
+               //         AssignedServer = Servers[serverId];
+               //         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
+               //         serverId = Selection(Servers, serverEndTime, customer.ArrivalTime);
+               //     }
+               //     /// if queue empty and there's avaliable servers
+               //     if(serverId != -1)
+               //     {
+               //         AssignedServer = Servers[serverId];
+               //         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
+               //     }
+               //     //// if queue not empty and there isn't avaliable servers
+               //     else if (serverId == -1 && CustomerQueue.Count != 0)
+               //     {
+               //         if (!CustomerIsServed[customer.CustomerId])
+               //         {
+               //             CustomerQueue.Enqueue(customer);
+               //             CustomersIds.Enqueue(customer.CustomerId);
+               //             updateWaitingTime();
+               //         }
+               //             
+               //         
+               //     }
+               // }else
+               // {
+               //     //if(!CustomersIds.Contains(customer.CustomerId) && CustomerIsServed[)4
+               //     if (!CustomerIsServed[customer.CustomerId])
+               //     {
+               //         CustomerQueue.Enqueue(customer);
+               //         CustomersIds.Enqueue(customer.CustomerId);
+               //         updateWaitingTime();
+               //     }
+               // }
+               //
                 if (MaxQueueLength < CustomerQueue.Count)
                     MaxQueueLength = CustomerQueue.Count;
                     
@@ -201,7 +255,7 @@ namespace Simulation_Task
             TimeServiceEnds = TimeServiceBegins + ServiceTime;
             WaitingTime = CustomersWaitingTime[customer.CustomerId];
             ServerEndTime[AssignedServer.ServerId] = TimeServiceEnds;
-            dr[0] = customer.CustomerId + 1;
+            dr[0] = CustomerNumber;
             dr[1] = customer.RandomInterarrivalTime;
             dr[2] = customer.InterarrivalTime;
             dr[3] = customer.ArrivalTime;
@@ -242,7 +296,7 @@ namespace Simulation_Task
         }
         //// arrival time
         // idle represents endtime of each server and if server is idle the content equals 0
-        private int Selection(List<Server> servers, int[] endTime,int arrivalTime)
+        private int Selection(List<Server> servers, int[] endTime, int arrivalTime, int customerId)
         {
             double[] TotServiceTime = new double[endTime.Length];
             for (int i = 0; i < endTime.Length; i++)
@@ -265,7 +319,7 @@ namespace Simulation_Task
             int idx = -1;
             for (int i = 0; i < endTime.Length; i++)
             {
-                if (endTime[i] <= arrivalTime)
+                if (arrivalTime + CustomersWaitingTime[customerId] >= endTime[i])
                 {
                     if (TotServiceTime[i] < minTot)
                     {
