@@ -28,7 +28,7 @@ namespace Simulation_Task
         private void Results_Load(object sender, EventArgs e)
         {
             DataTable Res = new DataTable();
-            int NumberOfCustomers = 100;
+            int NumberOfCustomers = 10;
             Enums.ServerSelectionMethod ssm = Enums.ServerSelectionMethod.HighestPriority;
             Enums.ServerStoppingCondition ssc = Enums.ServerStoppingCondition.NumberOfCustomers;
             simulation.createResultsTable(Res, Servers, InterArrivalDirtribution,ssm,ssc,NumberOfCustomers);
