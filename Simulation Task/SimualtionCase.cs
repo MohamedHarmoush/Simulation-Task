@@ -28,7 +28,7 @@ namespace Simulation_Task
         public int WaitingTime { get; set; }
 
         public int DepartureTime { get; set; }
-
+        private Random rand;
         public Server AssignedServer { get; set; }
         public int MaxQueueLength { get; set; }
         public Queue<Customer> CustomerQueue { get; set; }
@@ -43,6 +43,7 @@ namespace Simulation_Task
         {
             createTableColumns(Res, Servers);
             MaxQueueLength = 0;
+            rand = new Random();
             makeSimulationCalc(Res, Servers, InterArrivalDirtribution, ssm, ssc, NumberOfCustomers);
 
 
@@ -68,8 +69,7 @@ namespace Simulation_Task
         }
         private int RandomNumberGenerator(int min,int max)
         {
-            Random rand = new Random();
-            return rand.Next(min,max);
+            return rand.Next(1,100);
         }
         private void makeSimulationCalc(DataTable table, List<Server> Servers, List<TimeDistribution> InterArrivalDistribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
@@ -78,15 +78,15 @@ namespace Simulation_Task
             for (int i = 0; i < Servers.Count; i++)
                 serverEndTime[i] = 0;
             ////initialize CustomersWaiting Time.
-            CustomersWaitingTime  = new List<int>(NumberOfCustomers);
+            CustomersWaitingTime = new List<int>(NumberOfCustomers + 5);
             CustomerQueue = new  Queue<Customer>();
             CustomersIds = new Queue<int>();
-            for(int i =0 ; i< NumberOfCustomers;i++)
+            for(int i =0 ; i<= NumberOfCustomers + 5;i++)
                 CustomersWaitingTime.Add(0);
-            CustomerArrivalTimes = new int[NumberOfCustomers];
+            CustomerArrivalTimes = new int[NumberOfCustomers+5];
 
 
-            for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0); i++)
+            for (int i = 0; (i < NumberOfCustomers) || (CustomerQueue.Count > 0);)
             {
                 //free 
                 //CustomerQueue.Enqueue(i);
@@ -124,7 +124,7 @@ namespace Simulation_Task
                         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
                     }
                     //// if queue not empty and there isn't avaliable servers
-                    else if (serverId == -1 && CustomerQueue.Count != 0)
+                    else if (serverId == -1 && CustomerQueue.Count != 0 &&!CustomerQueue.Contains(customer))
                     {
                         CustomerQueue.Enqueue(customer);
                         CustomersIds.Enqueue(customer.CustomerId);
@@ -134,14 +134,18 @@ namespace Simulation_Task
                     }
                 }else
                 {
-                    CustomerQueue.Enqueue(customer);
-                    CustomersIds.Enqueue(customer.CustomerId);
-                    updateWaitingTime();
+                    if (!CustomerQueue.Contains(customer))
+                    {
+                        CustomerQueue.Enqueue(customer);
+                        CustomersIds.Enqueue(customer.CustomerId);
+                        updateWaitingTime();
+                    }
                 }
 
                 if (MaxQueueLength < CustomerQueue.Count)
                     MaxQueueLength = CustomerQueue.Count;
-
+                if (i <=NumberOfCustomers)
+                    i++;
 
             }
         }
