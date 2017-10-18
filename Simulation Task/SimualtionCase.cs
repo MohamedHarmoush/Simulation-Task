@@ -122,7 +122,7 @@ namespace Simulation_Task
                         {
                             customerInQueue = CustomerQueue.Dequeue();
                             CustomersIds.Dequeue();
-                            serverId = Selection(Servers, serverEndTime, customerInQueue.ArrivalTime, customerInQueue.CustomerId);
+                            //serverId = Selection(Servers, serverEndTime, customerInQueue.ArrivalTime, customerInQueue.CustomerId);
                             AssignedServer = Servers[serverId];
                             serveCustomer(customerInQueue, table, InterArrivalDistribution, ref serverEndTime);
                            
@@ -138,17 +138,23 @@ namespace Simulation_Task
                         }
                         else
                         {
-                            CustomerQueue.Enqueue(customer);
-                            CustomersIds.Enqueue(customer.CustomerId);
-                            updateWaitingTime();
+                            if (!CustomersIds.Contains(customer.CustomerId))
+                            {
+                                CustomerQueue.Enqueue(customer);
+                                CustomersIds.Enqueue(customer.CustomerId);
+                                updateWaitingTime();
+                            }
                         }
                        
                     }
                     else if (CustomerQueue.Count != 0 && serverId == -1)
                     {
-                        CustomerQueue.Enqueue(customer);
-                        CustomersIds.Enqueue(customer.CustomerId);
-                        updateWaitingTime();
+                        if (!CustomersIds.Contains(customer.CustomerId))
+                        {
+                            CustomerQueue.Enqueue(customer);
+                            CustomersIds.Enqueue(customer.CustomerId);
+                            updateWaitingTime();
+                        }
                     }
                 }else
                 {
@@ -159,52 +165,14 @@ namespace Simulation_Task
                         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
                     }else
                     {
-                        CustomerQueue.Enqueue(customer);
-                        CustomersIds.Enqueue(customer.CustomerId);
-                        updateWaitingTime();
+                        if (!CustomersIds.Contains(customer.CustomerId))
+                        {
+                            CustomerQueue.Enqueue(customer);
+                            CustomersIds.Enqueue(customer.CustomerId);
+                            updateWaitingTime();
+                        }
                     }
                 }
-                
-               // serverId = Selection(Servers, serverEndTime,customer.ArrivalTime);
-               // if (serverId != -1)
-               // {
-               //     while (CustomerQueue.Count != 0 && serverId != -1)
-               //     {
-               //         customer = CustomerQueue.Dequeue();
-               //         CustomersIds.Dequeue();
-               //         AssignedServer = Servers[serverId];
-               //         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
-               //         serverId = Selection(Servers, serverEndTime, customer.ArrivalTime);
-               //     }
-               //     /// if queue empty and there's avaliable servers
-               //     if(serverId != -1)
-               //     {
-               //         AssignedServer = Servers[serverId];
-               //         serveCustomer(customer, table, InterArrivalDistribution, ref serverEndTime);
-               //     }
-               //     //// if queue not empty and there isn't avaliable servers
-               //     else if (serverId == -1 && CustomerQueue.Count != 0)
-               //     {
-               //         if (!CustomerIsServed[customer.CustomerId])
-               //         {
-               //             CustomerQueue.Enqueue(customer);
-               //             CustomersIds.Enqueue(customer.CustomerId);
-               //             updateWaitingTime();
-               //         }
-               //             
-               //         
-               //     }
-               // }else
-               // {
-               //     //if(!CustomersIds.Contains(customer.CustomerId) && CustomerIsServed[)4
-               //     if (!CustomerIsServed[customer.CustomerId])
-               //     {
-               //         CustomerQueue.Enqueue(customer);
-               //         CustomersIds.Enqueue(customer.CustomerId);
-               //         updateWaitingTime();
-               //     }
-               // }
-               //
                 if (MaxQueueLength < CustomerQueue.Count)
                     MaxQueueLength = CustomerQueue.Count;
                     
@@ -238,20 +206,9 @@ namespace Simulation_Task
         {
             DataRow dr = table.NewRow();
             CustomerNumber = customer.CustomerId +1;
-            //if(customer.CustomerId == 0)
-            //{
-            //    RandomInterarrivalTime = 0;
-            //}
-            //else
-            //{
-            //    int previousCusomer = customer.CustomerId -1;
-            //    RandomInterarrivalTime = RandomNumberGenerator(1, 100);
-            //    InterarrivalTime = getTimeFromTimeDistribution(intervalTimeDistribution,RandomInterarrivalTime);
-            //    ArrivalTime = int.Parse(table.Rows[previousCusomer][3].ToString()) + InterarrivalTime;
-            //}
             RandomServiceTime = RandomNumberGenerator(1, 100);
             ServiceTime = getTimeFromTimeDistribution(AssignedServer.ServiceTimeDistribution,RandomServiceTime);
-            TimeServiceBegins = ArrivalTime + CustomersWaitingTime[customer.CustomerId];
+            TimeServiceBegins = CustomerArrivalTimes[customer.CustomerId] + CustomersWaitingTime[customer.CustomerId];
             TimeServiceEnds = TimeServiceBegins + ServiceTime;
             WaitingTime = CustomersWaitingTime[customer.CustomerId];
             ServerEndTime[AssignedServer.ServerId] = TimeServiceEnds;
@@ -286,14 +243,6 @@ namespace Simulation_Task
         /// </summary>
         /// <param name="EndTime"></param>
         /// <param name="CustomerArrivalTime"></param>
-        private void Free_Servers(ref int[] EndTime, int CustomerArrivalTime)
-        {
-            for (int i = 0; i < EndTime.Length; i++)
-            {
-                if (EndTime[i] <= CustomerArrivalTime) 
-                    EndTime[i] = CustomerArrivalTime + ServiceTime;
-            }
-        }
         //// arrival time
         // idle represents endtime of each server and if server is idle the content equals 0
         private int Selection(List<Server> servers, int[] endTime, int arrivalTime, int customerId)
@@ -330,39 +279,5 @@ namespace Simulation_Task
             }
             return idx;
         }
-     /*   private int Selection(List<Server> servers, int[] idle)
-        {
-            double[] TotServiceTime = new double[idle.Length];
-            for (int i = 0; i < idle.Length; i++)
-            {
-                TotServiceTime[i] = servers[i].ServiceTimeDistribution[0].Time *
-                                    servers[i].ServiceTimeDistribution[0].Probability
-                                    +
-                                    servers[i].ServiceTimeDistribution[1].Time *
-                                    servers[i].ServiceTimeDistribution[1].Probability
-                                    +
-                                    servers[i].ServiceTimeDistribution[2].Time *
-                                    servers[i].ServiceTimeDistribution[2].Probability
-                                    +
-                                    servers[i].ServiceTimeDistribution[3].Time *
-                                    servers[i].ServiceTimeDistribution[3].Probability
-                                    ;
-
-            }
-            double minTot = double.MaxValue;
-            int idx = -1;
-            for (int i = 0; i < idle.Length; i++)
-            {
-                if (idle[i] == 0)
-                {
-                    if (TotServiceTime[i] < minTot)
-                    {
-                        idx = i;
-                        minTot = TotServiceTime[i];
-                    }
-                }
-            }
-            return idx;
-        }*/
     }
 }
