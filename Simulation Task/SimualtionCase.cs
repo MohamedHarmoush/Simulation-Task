@@ -41,8 +41,6 @@ namespace Simulation_Task
         public List<int> CustomersWaitingTime { get; set; }
         public void createResultsTable(DataTable Res, List<Server> Servers, List<TimeDistribution> InterArrivalDirtribution, Enums.ServerSelectionMethod ssm, Enums.ServerStoppingCondition ssc, int NumberOfCustomers)
         {
-            //comment
-            //comment tani
             createTableColumns(Res, Servers);
             MaxQueueLength = 0;
             makeSimulationCalc(Res, Servers, InterArrivalDirtribution, ssm, ssc, NumberOfCustomers);
